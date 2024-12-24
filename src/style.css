@@ -1,4 +1,3 @@
-
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -14,8 +13,6 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-
-
 a {
   font-weight: 500;
   color: #646cff;
@@ -27,8 +24,8 @@ a:hover {
 
 body {
   margin: 0;
-  padding:0;
- 
+  padding: 0;
+
   width: 100%;
   height: 100vh;
 }
@@ -39,19 +36,15 @@ h1 {
 }
 
 .cart-layer {
-  display:none
+  display: none;
+}
+body.displaying_cart {
+  overflow-y: hidden;
 }
 
-.displaying_cart .cart-layer{
+.displaying_cart .cart-layer {
   display: block;
 }
-
-
-
-
-
-
-
 
 @media (prefers-color-scheme: light) {
   :root {

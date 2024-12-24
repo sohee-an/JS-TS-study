@@ -1,36 +1,45 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <link rel="stylesheet" href="./src/style.css"/>
+    <link rel="stylesheet" href="./src/style.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + TS</title>
   </head>
   <body>
     <div class="container mx-auto p-4 px-8 relative">
       <nav class="flex items-center justify-between py-4">
-        <div class="text-transparent text-4xl bg-gradient-to-r from-blue-500 to-green-500 bg-clip-text">
+        <div
+          class="text-transparent text-4xl bg-gradient-to-r from-blue-500 to-green-500 bg-clip-text"
+        >
           Transparent Text
         </div>
-        <button type="button" class="btn-cart text-green-900 px-2 hover:bg-green-200 rounded-lg py-1">
+        <button
+          type="button"
+          class="btn-cart text-green-900 px-2 hover:bg-green-200 rounded-lg py-1"
+        >
           <span>Cart</span>
           <span class="total_count text-xs"></span>
         </button>
       </nav>
-     
-      <div id="products" class="grid grid-cols-2 sm:grid-cols-1 gap-4">
-       
-      </div>
-      <div class="hidden cart-layer bg-slate-500 fixed insert-0 ">
-        <div class="cart-dimmed-bg fixed left-0 top-0 bottom-0 w-1/2 bg-black opacity-30 "></div>
-        <div class="fixed right-0 top-0 bottom-0 w-1/2 bg-white p-2">
+
+      <div id="products" class="grid grid-cols-2 sm:grid-cols-1 gap-4"></div>
+      <div class="hidden cart-layer bg-slate-500 fixed insert-0">
+        <div
+          class="cart-dimmed-bg fixed left-0 top-0 bottom-0 w-1/2 bg-black opacity-30"
+        ></div>
+        <div class="fixed right-0 top-0 bottom-0 w-2/3 sm:1/2 bg-white p-2">
           <div class="flex justify-end py-2">
-            <button type="button" class="btn-close-cart text-green-800 bg-green-200 hover:bg-green-300 px-2 rounded-mdz">X</button> 
-          </div> 
+            <button
+              type="button"
+              class="btn-close-cart text-green-800 bg-green-200 hover:bg-green-300 px-2 rounded-mdz"
+            >
+              X
+            </button>
+          </div>
           <div class="cart-items"></div>
         </div>
-        
       </div>
     </div>
     <script type="module" src="/src/main.ts"></script>
