@@ -1,40 +1,25 @@
 import learnwith from "./api";
+// test.json 파일을 import 합니다.
+import test from "./api/data.json";
 import "./style.css";
+import { Product, ProductMap, CountMap } from "./types/mainType";
 
-let products: any[] = [];
-learnwith()
-  .then((res: any[]) => {
-    products = res;
-    const productElement = document.querySelector<HTMLDivElement>("#products");
-    if (productElement) {
-      productElement.innerHTML = res
-        .map(
-          (product, index) => `
-          <div class="product" data-product-id="${product.id}" data-product-index=${index}> 
-          <img  src="${product.images[0]}" alt="Image of ${product.name}"/>
-            <p>${product.name}</p>
-            <div class="flex items-center justify-between">
-                <span>Price : ${product.regularPrice}</span>
-                <div>
-                    <button type="button" disabled class="btn-decrease bg-green-200 disabled:cursor-not-allowed bg-gray-200 rounded-lg hover:bg-green-300 text-green-800 py-1 px-3">-</button>
-                    <span class="cart-count text-green-800"></span>
-                    <button type="button" class="btn-increase bg-green-200  rounded-lg hover:bg-green-300 text-green-800 py-1 px-3">+</button>
-                </div>
-                
-            </div>
-            </div>
-        `
-        )
-        .join("");
-    }
-  })
-  .catch((error) => {
-    console.error("데이터 로딩 실패:", error);
-  });
+async function getProducts(): Promise<Product[]> {
+  if (process.env.NODE_ENV === "development") {
+    return JSON.parse(test as any);
+  } else {
+    const response = await fetch(
+      "https://learnwitheunjae.dev/api/sinabro-js/ecommerce"
+    );
+    return await response.json();
+  }
+}
 
-function findElement(startingElement: any, selector: string) {
-  let currentElement = startingElement;
-  //밑에서부터 찾아서 올라간다.
+function findElement(
+  startingElement: HTMLElement,
+  selector: string
+): HTMLElement | null {
+  let currentElement: HTMLElement | null = startingElement;
   while (currentElement) {
     if (currentElement.matches(selector)) {
       return currentElement;
@@ -44,201 +29,168 @@ function findElement(startingElement: any, selector: string) {
   return null;
 }
 
-const sum = (count: object) => {
-  return Object.values(countMap as number[]).reduce(
-    (sum, curr) => sum + curr,
-    0
-  );
-};
-/*
-@params productId: string
-장바구니
-*/
-const updateProductCount = (productId: string) => {
-  const productElement = document.querySelector(
-    `[data-product-id ="${productId}"]`
-  )!;
-  const cartCount = productElement.querySelector(".cart-count");
-  if (cartCount) {
-    cartCount.innerHTML = countMap[productId] || "";
-  }
-};
+function sumAllCounts(countMap: CountMap): number {
+  let sum = 0;
+  Object.values(countMap).forEach((number) => {
+    sum += number;
+  });
+  return sum;
 
-const updateCartItems = () => {
-  const cartItems = document.querySelector(".cart-items");
-
-  if (cartItems) {
-    const cartHTML = Object.entries(countMap)
-      .filter(([_, count]: [any, any]) => count > 0)
-      .map(([id, count]) => {
-        const prod = products.find((p) => p.id === id);
-
-        if (!prod) return "";
-        return `
-                                <div class="product" data-product-id="${prod.id}">
-                                    <img src="${prod.images[0]}" alt="Image of ${prod.name}"/>
-                                    <p>${prod.name}</p>
-                                    <div class="flex items-center justify-between">
-                                        <span>Price: ${prod.regularPrice}</span>
-                                        <div>
-                                            <button type="button" class="btn-decrease bg-green-200 rounded-lg hover:bg-green-300 text-green-800 py-1 px-3">-</button>
-                                            <span class="cart-count text-green-800">${count}</span>
-                                            <button type="button" class="btn-increase bg-green-200 rounded-lg hover:bg-green-300 text-green-800 py-1 px-3">+</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
-      })
-      .join("");
-    cartItems.innerHTML = cartHTML;
-  }
-
-  // 총 개수 업데이트
-  const totalCount = document.querySelector(".total_count");
-
-  if (totalCount) {
-    const sumCount = sum(countMap);
-    totalCount.innerHTML = `(${sumCount})`;
-  }
-};
-
-const updateViewsForCount = (productId: string) => {
-  // 현재 상품의 카운트 표시 업데이트
-  updateProductCount(productId);
-
-  // 장바구니 업데이트
-  updateCartItems();
-};
-function updateCount(productId: string, operation: "increase" | "decrease") {
-  if (operation === "increase") {
-    countMap[productId] += 1;
-  } else if (countMap[productId] > 0) {
-    countMap[productId] -= 1;
-  }
-  updateViewsForCount(productId);
+  // Alternative using reduce
+  // return Object.values(countMap).reduce((total, current) => {
+  //   total += current;
+  //   return total;
+  // }, 0);
 }
 
-const countMap = {} as any;
+function getProductHTML(product: Product, count: number = 0): string {
+  return `
+  <div class="product" data-product-id="${product.id}">
+    <img src="${product.images[0]}" alt="Image of ${product.name}" />
+    <p>${product.name}</p>
+    <div class="flex items-center justify-between">
+      <span>Price: ${product.regularPrice}</span>
+      <div>
+        <button type="button" class="btn-decrease disabled:cursor-not-allowed disabled:opacity-50 bg-green-200 hover:bg-green-300 text-green-800 py-1 px-3 rounded-full">-</button>
+        <span class="cart-count text-green-800">${
+          count === 0 ? "" : count
+        }</span>
+        <button type="button" class="btn-increase bg-green-200 hover:bg-green-300 text-green-800 py-1 px-3 rounded-full">+</button>
+      </div>
+    </div>
+  </div>
+`;
+}
 
-document.querySelector("#products")?.addEventListener("click", (event) => {
-  const targetElement = event?.target;
-  if (!targetElement) return;
+async function main(): Promise<void> {
+  const products = await getProducts();
+  const productMap: ProductMap = {};
+  products.forEach((product) => {
+    productMap[product.id] = product;
+  });
+  const countMap: CountMap = {};
 
-  const productElement = findElement(targetElement, ".product");
-  if (!productElement) return;
+  const updateProductCount = (productId: string): void => {
+    const productElement = document.querySelector<HTMLElement>(
+      `.product[data-product-id='${productId}']`
+    );
+    if (!productElement) return;
 
-  const productId = productElement.getAttribute("data-product-id");
-  const product = products.find((product) => product.id === productId);
-  if (!product) return;
+    const cartCountElement = productElement.querySelector(".cart-count");
+    if (!cartCountElement) return;
 
-  if (targetElement instanceof Element) {
+    cartCountElement.innerHTML =
+      countMap[productId] === 0 ? "" : String(countMap[productId]);
+  };
+
+  const updateCart = (): void => {
+    const productIds = Object.keys(countMap);
+    const cartItemsElement = document.querySelector<HTMLElement>(".cart_items");
+    const totalCountElement =
+      document.querySelector<HTMLElement>(".total_count");
+
+    if (!cartItemsElement || !totalCountElement) return;
+
+    cartItemsElement.innerHTML = productIds
+      .map((productId) => {
+        const productInCart = productMap[productId];
+        if (countMap[productId] === 0) {
+          return "";
+        }
+        return getProductHTML(productInCart, countMap[productId]);
+      })
+      .join("");
+
+    totalCountElement.innerHTML = `(${sumAllCounts(countMap)})`;
+  };
+
+  const increaseCount = (productId: string): void => {
+    if (countMap[productId] === undefined) {
+      countMap[productId] = 0;
+    }
+    countMap[productId] += 1;
+    updateProductCount(productId);
+    updateCart();
+  };
+
+  const decreaseCount = (productId: string): void => {
+    if (countMap[productId] === undefined) {
+      countMap[productId] = 0;
+    }
+    countMap[productId] -= 1;
+    updateProductCount(productId);
+    updateCart();
+  };
+
+  const productsElement = document.querySelector<HTMLElement>("#products");
+  if (!productsElement) return;
+
+  productsElement.innerHTML = products
+    .map((product) => getProductHTML(product))
+    .join("");
+
+  productsElement.addEventListener("click", (event) => {
+    const targetElement = event.target as HTMLElement;
+    const productElement = findElement(targetElement, ".product");
+    if (!productElement) return;
+
+    const productId = productElement.getAttribute("data-product-id");
+    if (!productId) return;
+
     if (
       targetElement.matches(".btn-decrease") ||
       targetElement.matches(".btn-increase")
     ) {
-      // 카운트 초기화
-      if (countMap[productId] === undefined) {
-        countMap[productId] = 0;
-      }
-
-      // 카운트 업데이트
       if (targetElement.matches(".btn-decrease")) {
-        if (countMap[productId] > 0) {
-          // 음수 방지
-          updateCount(productId, "decrease");
-        }
-      } else {
-        updateCount(productId, "increase");
+        decreaseCount(productId);
+      } else if (targetElement.matches(".btn-increase")) {
+        increaseCount(productId);
       }
-
-      //   // 현재 상품의 카운트 표시 업데이트
-      //   const cartCount = productElement.querySelector(".cart-count");
-      //   if (cartCount) {
-      //     cartCount.innerHTML = countMap[productId] || "";
-      //   }
-
-      //   // 장바구니 업데이트
-      //   const cartItems = document.querySelector(".cart-items");
-
-      //   if (cartItems) {
-      //     const cartHTML = Object.entries(countMap)
-      //       .filter(([_, count]: [any, any]) => count > 0)
-      //       .map(([id, count]) => {
-      //         const prod = products.find((p) => p.id === id);
-
-      //         if (!prod) return "";
-      //         return `
-      //                             <div class="product" data-product-id="${prod.id}">
-      //                                 <img src="${prod.images[0]}" alt="Image of ${prod.name}"/>
-      //                                 <p>${prod.name}</p>
-      //                                 <div class="flex items-center justify-between">
-      //                                     <span>Price: ${prod.regularPrice}</span>
-      //                                     <div>
-      //                                         <button type="button" class="btn-decrease bg-green-200 rounded-lg hover:bg-green-300 text-green-800 py-1 px-3">-</button>
-      //                                         <span class="cart-count text-green-800">${count}</span>
-      //                                         <button type="button" class="btn-increase bg-green-200 rounded-lg hover:bg-green-300 text-green-800 py-1 px-3">+</button>
-      //                                     </div>
-      //                                 </div>
-      //                             </div>
-      //                         `;
-      //       })
-      //       .join("");
-      //     cartItems.innerHTML = cartHTML;
-      //   }
-
-      //   // 총 개수 업데이트
-      //   const totalCount = document.querySelector(".total_count");
-
-      //   if (totalCount) {
-      //     const sumCount = sum(countMap);
-      //     totalCount.innerHTML = `(${sumCount})`;
-      //   }
     }
-  }
-});
+  });
 
-document.querySelector(".cart-items")?.addEventListener("click", (event) => {
-  const targetElement = event?.target;
-  if (!targetElement) return;
+  const cartItemsElement = document.querySelector<HTMLElement>(".cart_items");
+  if (!cartItemsElement) return;
 
-  const productElement = findElement(targetElement, ".product");
-  if (!productElement) return;
+  cartItemsElement.addEventListener("click", (event) => {
+    const targetElement = event.target as HTMLElement;
+    const productElement = findElement(targetElement, ".product");
+    if (!productElement) return;
 
-  const productId = productElement.getAttribute("data-product-id");
-  const product = products.find((product) => product.id === productId);
-  if (!product) return;
+    const productId = productElement.getAttribute("data-product-id");
+    if (!productId) return;
 
-  if (targetElement instanceof Element) {
     if (
       targetElement.matches(".btn-decrease") ||
       targetElement.matches(".btn-increase")
     ) {
-      // 카운트 초기화
-      if (countMap[productId] === undefined) {
-        countMap[productId] = 0;
-      }
-
-      // 카운트 업데이트
       if (targetElement.matches(".btn-decrease")) {
-        if (countMap[productId] > 0) {
-          // 음수 방지
-          updateCount(productId, "decrease");
-        }
-      } else {
-        updateCount(productId, "increase");
+        decreaseCount(productId);
+      } else if (targetElement.matches(".btn-increase")) {
+        increaseCount(productId);
       }
     }
-  }
-});
+  });
 
-document.querySelector(".btn-cart")?.addEventListener("click", (event) => {
-  document.body.classList.add("displaying_cart");
-});
+  const btnCartElement = document.querySelector<HTMLElement>(".btn-cart");
+  const btnCloseCartElement =
+    document.querySelector<HTMLElement>(".btn-close-cart");
+  const cartDimmedBgElement =
+    document.querySelector<HTMLElement>(".cart-dimmed-bg");
 
-document.querySelector(".btn-close-cart")?.addEventListener("click", () => {
-  document.body.classList.remove("displaying_cart");
-});
+  if (!btnCartElement || !btnCloseCartElement || !cartDimmedBgElement) return;
 
-document.querySelector(".cart-dimmed-bg")?.addEventListener("click", () => {
-  document.body.classList.remove("displaying_cart");
-});
+  btnCartElement.addEventListener("click", () => {
+    document.body.classList.add("displaying_cart");
+  });
+
+  btnCloseCartElement.addEventListener("click", () => {
+    document.body.classList.remove("displaying_cart");
+  });
+
+  cartDimmedBgElement.addEventListener("click", () => {
+    document.body.classList.remove("displaying_cart");
+  });
+}
+
+main();
