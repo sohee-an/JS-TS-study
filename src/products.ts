@@ -1,9 +1,14 @@
 import { getProducts } from "./api";
 import { Product, ProductMap } from "./types/mainType";
 
-export function getProductHTML(product: Product, count: number = 0): string {
-  return `
-  <div class="product" data-product-id="${product.id}">
+export function getProductElement(
+  product: Product,
+  count: number = 0
+): HTMLElement {
+  const element = document.createElement("div");
+  element.classList.add("product");
+  element.setAttribute("data-product-id", product.id);
+  element.innerHTML = `
     <img src="${product.images[0]}" alt="Image of ${product.name}" />
     <p>${product.name}</p>
     <div class="flex items-center justify-between">
@@ -16,8 +21,9 @@ export function getProductHTML(product: Product, count: number = 0): string {
         <button type="button" class="btn-increase bg-green-200 hover:bg-green-300 text-green-800 py-1 px-3 rounded-full">+</button>
       </div>
     </div>
-  </div>
+
 `;
+  return element;
 }
 
 export async function setupProducts({
@@ -33,9 +39,9 @@ export async function setupProducts({
 
   const productsElement = document.querySelector<HTMLElement>("#products")!;
 
-  productsElement.innerHTML = products
-    .map((product: Product) => getProductHTML(product))
-    .join("");
+  products.forEach((product: Product) => {
+    productsElement.appendChild(getProductElement(product));
+  });
 
   const updateCount = ({
     productId,
@@ -54,5 +60,9 @@ export async function setupProducts({
 
     cartCountElement.innerHTML = count === 0 ? "" : String(count);
   };
-  return { updateCount };
+
+  const getProductById = ({ productId }: { productId: string }) => {
+    return productMap[productId];
+  };
+  return { updateCount, getProductById };
 }
