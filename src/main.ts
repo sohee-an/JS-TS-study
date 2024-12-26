@@ -1,4 +1,6 @@
 import { getProducts } from "./api";
+import { setupProducts, getProductHTML } from "./products";
+import { setupCounter } from "./counter";
 import "./style.css";
 import { Product, ProductMap, CountMap } from "./types/mainType";
 
@@ -30,45 +32,13 @@ function sumAllCounts(countMap: CountMap): number {
   // }, 0);
 }
 
-function getProductHTML(product: Product, count: number = 0): string {
-  return `
-  <div class="product" data-product-id="${product.id}">
-    <img src="${product.images[0]}" alt="Image of ${product.name}" />
-    <p>${product.name}</p>
-    <div class="flex items-center justify-between">
-      <span>Price: ${product.regularPrice}</span>
-      <div>
-        <button type="button" class="btn-decrease disabled:cursor-not-allowed disabled:opacity-50 bg-green-200 hover:bg-green-300 text-green-800 py-1 px-3 rounded-full">-</button>
-        <span class="cart-count text-green-800">${
-          count === 0 ? "" : count
-        }</span>
-        <button type="button" class="btn-increase bg-green-200 hover:bg-green-300 text-green-800 py-1 px-3 rounded-full">+</button>
-      </div>
-    </div>
-  </div>
-`;
-}
-
 async function main(): Promise<void> {
-  const products = await getProducts();
-  const productMap: ProductMap = {};
-  products.forEach((product: Product) => {
-    productMap[product.id] = product;
+  const { updateCount } = await setupProducts({
+    container: document.querySelector("#products"),
   });
+
+  // 이부분이 프로덕트에도 쓰이고 카트에서도 쓰이지 않을까 => 데코레이터 패턴으로 묶어서
   const countMap: CountMap = {};
-
-  const updateProductCount = (productId: string): void => {
-    const productElement = document.querySelector<HTMLElement>(
-      `.product[data-product-id='${productId}']`
-    );
-    if (!productElement) return;
-
-    const cartCountElement = productElement.querySelector(".cart-count");
-    if (!cartCountElement) return;
-
-    cartCountElement.innerHTML =
-      countMap[productId] === 0 ? "" : String(countMap[productId]);
-  };
 
   const updateCart = (): void => {
     const productIds = Object.keys(countMap);
@@ -96,7 +66,7 @@ async function main(): Promise<void> {
       countMap[productId] = 0;
     }
     countMap[productId] += 1;
-    updateProductCount(productId);
+    updateCount({ productId, count: countMap[productId] });
     updateCart();
   };
 
@@ -105,16 +75,16 @@ async function main(): Promise<void> {
       countMap[productId] = 0;
     }
     countMap[productId] -= 1;
-    updateProductCount(productId);
+    updateCount({ productId, count: countMap[productId] });
     updateCart();
   };
 
   const productsElement = document.querySelector<HTMLElement>("#products");
   if (!productsElement) return;
 
-  productsElement.innerHTML = products
-    .map((product: Product) => getProductHTML(product))
-    .join("");
+  // productsElement.innerHTML = products
+  //   .map((product: Product) => getProductHTML(product))
+  //   .join("");
 
   productsElement.addEventListener("click", (event) => {
     const targetElement = event.target as HTMLElement;
