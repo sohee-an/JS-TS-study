@@ -1,5 +1,14 @@
+export interface Product {
+  id: string;
+  name: string;
+  images: string[];
+  regularPrice: number;
+}
 
-export type Product= {
-    name: string;
-    // 다른 필요한 속성들...
-  }
+export interface ProductMap {
+  [key: string]: Product;
+}
+
+export interface CountMap {
+  [key: string]: number;
+}
