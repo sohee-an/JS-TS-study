@@ -1,19 +1,6 @@
-import learnwith from "./api";
-// test.json 파일을 import 합니다.
-import test from "./api/data.json";
+import { getProducts } from "./api";
 import "./style.css";
 import { Product, ProductMap, CountMap } from "./types/mainType";
-
-async function getProducts(): Promise<Product[]> {
-  if (process.env.NODE_ENV === "development") {
-    return JSON.parse(test as any);
-  } else {
-    const response = await fetch(
-      "https://learnwitheunjae.dev/api/sinabro-js/ecommerce"
-    );
-    return await response.json();
-  }
-}
 
 function findElement(
   startingElement: HTMLElement,
@@ -65,7 +52,7 @@ function getProductHTML(product: Product, count: number = 0): string {
 async function main(): Promise<void> {
   const products = await getProducts();
   const productMap: ProductMap = {};
-  products.forEach((product) => {
+  products.forEach((product: Product) => {
     productMap[product.id] = product;
   });
   const countMap: CountMap = {};
@@ -126,7 +113,7 @@ async function main(): Promise<void> {
   if (!productsElement) return;
 
   productsElement.innerHTML = products
-    .map((product) => getProductHTML(product))
+    .map((product: Product) => getProductHTML(product))
     .join("");
 
   productsElement.addEventListener("click", (event) => {
