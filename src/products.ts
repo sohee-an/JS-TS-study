@@ -28,8 +28,12 @@ export function getProductElement(
 
 export async function setupProducts({
   container,
+  onDecreaseClick,
+  onIncreseClick,
 }: {
   container: HTMLElement | null;
+  onDecreaseClick: ({ productId }: { productId: string }) => void;
+  onIncreseClick: ({ productId }: { productId: string }) => void;
 }) {
   const products = await getProducts();
   const productMap: ProductMap = {};
