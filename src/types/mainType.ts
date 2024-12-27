@@ -9,6 +9,6 @@ export interface ProductMap {
   [key: string]: Product;
 }
 
-export interface CountMap {
+export interface ICountMap {
   [key: string]: number;
 }

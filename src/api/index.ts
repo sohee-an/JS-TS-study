@@ -1,5 +1,5 @@
 import jsondata from "./data.json?raw";
-export default async function getProducts() {
+export async function getProducts() {
   if (process.env.NODE_ENV === "development") {
     return JSON.parse(jsondata);
   } else {
@@ -7,6 +7,6 @@ export default async function getProducts() {
       "https://learnwitheunjae.dev/api/sinabro-js/ecommerce"
     );
 
-    return response.json();
+    return await response.json();
   }
 }

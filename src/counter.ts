@@ -1,9 +1,35 @@
-export function setupCounter(element: HTMLButtonElement) {
-  let counter = 0
-  const setCounter = (count: number) => {
-    counter = count
-    element.innerHTML = `count is ${counter}`
-  }
-  element.addEventListener('click', () => setCounter(counter + 1))
-  setCounter(0)
+import { ICountMap } from "./types/mainType";
+
+export function setupCounter() {
+  const countMap: ICountMap = {};
+
+  const increase = ({ productId }: { productId: string }) => {
+    if (countMap[productId] === undefined) {
+      countMap[productId] = 0;
+    }
+    countMap[productId] += 1;
+    return countMap[productId];
+  };
+
+  const decrease = ({ productId }: { productId: string }) => {
+    if (countMap[productId] === undefined) {
+      countMap[productId] = 0;
+    }
+    countMap[productId] -= 1;
+
+    return countMap[productId];
+  };
+
+  const getTotalCount = () => {
+    let sum = 0;
+    Object.values(countMap).forEach((number) => {
+      sum += number;
+    });
+    return sum;
+  };
+  return {
+    increase,
+    decrease,
+    getTotalCount,
+  };
 }
