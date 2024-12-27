@@ -78,8 +78,6 @@ async function main(): Promise<void> {
     }
   });
 
-  const cartItemsElement = document.querySelector<HTMLElement>(".cart_items");
-
   const btnCartElement = document.querySelector<HTMLElement>(".btn-cart");
 
   const btnCloseCartElement =

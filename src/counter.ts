@@ -1,32 +1,46 @@
+import { bindReactiveState } from "./reactivity";
 import { ICountMap } from "./types/mainType";
 
 export function setupCounter() {
-  const countMap: ICountMap = {};
+  const [getCountMap, setCountMap] = bindReactiveState({
+    name: "countMap",
+    defaultValue: {},
+  });
 
   const increase = ({ productId }: { productId: string }) => {
-    if (countMap[productId] === undefined) {
-      countMap[productId] = 0;
+    const newCountMap = { ...getCountMap() };
+    if (newCountMap[productId] === undefined) {
+      newCountMap[productId] = 0;
     }
-    countMap[productId] += 1;
-    return countMap[productId];
+    newCountMap[productId] += 1;
+    setCountMap(newCountMap);
+
+    return newCountMap[productId];
   };
 
   const decrease = ({ productId }: { productId: string }) => {
-    if (countMap[productId] === undefined) {
-      countMap[productId] = 0;
+    const newCountMap = { ...getCountMap() };
+    if (newCountMap[productId] === undefined) {
+      newCountMap[productId] = 0;
     }
-    countMap[productId] -= 1;
 
-    return countMap[productId];
+    newCountMap[productId] -= 1;
+    setCountMap(newCountMap);
+
+    return newCountMap[productId];
   };
 
   const getTotalCount = () => {
     let sum = 0;
-    Object.values(countMap).forEach((number) => {
+    Object.values(getCountMap()).forEach((number) => {
       sum += number;
     });
     return sum;
   };
+
+  // const addChangeListner = (callback) => {
+  //   callbacks.push(callback);
+  // };
   return {
     increase,
     decrease,
