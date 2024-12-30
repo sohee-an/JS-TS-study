@@ -56,28 +56,6 @@ async function main(): Promise<void> {
     // updateCart();
   }
 
-  const productsElement = document.querySelector<HTMLElement>("#products");
-
-  productsElement?.addEventListener("click", (event) => {
-    const targetElement = event.target as HTMLElement;
-    const productElement = findElement(targetElement, ".product");
-
-    const productId = productElement?.getAttribute("data-product-id")!;
-
-    if (
-      targetElement.matches(".btn-decrease") ||
-      targetElement.matches(".btn-increase")
-    ) {
-      if (targetElement.matches(".btn-decrease")) {
-        onDecreaseClick({ productId });
-        // decreaseCount(productId);
-      } else if (targetElement.matches(".btn-increase")) {
-        onIncreseClick({ productId });
-        // increaseCount(productId);
-      }
-    }
-  });
-
   const btnCartElement = document.querySelector<HTMLElement>(".btn-cart");
 
   const btnCloseCartElement =

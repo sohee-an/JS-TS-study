@@ -1,5 +1,8 @@
 import { getProducts } from "./api";
 import { Product, ProductMap } from "./types/mainType";
+import { findElement } from "./utiles";
+
+//  저 span에 count를 자동으로 업데이트 하도록 -> reactive state를 사용해서 구현
 
 export function getProductElement(
   product: Product,
@@ -17,11 +20,14 @@ export function getProductElement(
         <button type="button"  ${
           count === 0 ? "disabled" : ""
         }  class="btn-decrease disabled:cursor-not-allowed disabled:opacity-50 bg-green-200 hover:bg-green-300 text-green-800 py-1 px-3 rounded-full">-</button>
-        <span class="cart-count text-green-800" data-subscribe-to="countMap" data-subscription-path="${
-          product.id
-        }></span>
+        <span 
+        class="cart-count text-green-800"
+         data-subscribe-to="countMap" data-subscription-path="${product.id}">
+          </span>
+      
         <button type="button" class="btn-increase bg-green-200 hover:bg-green-300 text-green-800 py-1 px-3 rounded-full">+</button>
-      </div>
+        
+        </div>
     </div>
 
 `;
@@ -51,10 +57,13 @@ export async function setupProducts({
 
   container?.addEventListener("click", (event) => {
     const targetElement = event.target as HTMLElement;
-    const productElement = targetElement.closest(".product");
+    const productElement = findElement(targetElement, ".product");
+
+    // productElement가 없으면 early return
     if (!productElement) return;
 
     const productId = productElement.getAttribute("data-product-id");
+    // productId가 없으면 early return
     if (!productId) return;
 
     if (targetElement.matches(".btn-decrease")) {
@@ -74,6 +83,8 @@ export async function setupProducts({
     const productElement = container?.querySelector<HTMLElement>(
       `.product[data-product-id='${productId}']`
     )!;
+    console.log("pp", productId, count);
+
     // if (!productElement) return;
 
     const cartCountElement = productElement.querySelector(".cart-count")!;

@@ -1,6 +1,7 @@
 import { bindReactiveState } from "./reactivity";
 import { ICountMap } from "./types/mainType";
 
+// 상품의 카운터를 담당하는 함수
 export function setupCounter() {
   const [getCountMap, setCountMap] = bindReactiveState({
     name: "countMap",
