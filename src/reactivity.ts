@@ -10,12 +10,11 @@ export function bindReactiveState({ name, defaultValue = {} }: TProps) {
 
   let value = defaultValue;
 
-  const getter = () => {
+  const getter = (): Record<string, number> => {
     return value;
   };
 
   // 변화된걸를 찾기 위해서는 옛날 값과 새로운 값을 비교해야됨
-
   const setter = (newValue: TProps["defaultValue"]) => {
     const oldKeys = Object.keys(value);
     const newKeys = Object.keys(newValue);
@@ -47,17 +46,17 @@ export function bindReactiveState({ name, defaultValue = {} }: TProps) {
           `[data-subscribe-to='${name}'][data-subscription-path='${key}']`
         )
       );
-      // elements.forEach((element: any) => {
-      //   if (element.tagName === "INPUT") {
-      //     element.value = newValue[key];
-      //   } else {
-      //     element.innerHTML = newValue[key];
-      //   }
-      // });
+      elements.forEach((element: any) => {
+        if (element.tagName === "INPUT") {
+          element.value = newValue[key];
+        } else {
+          element.innerHTML = newValue[key];
+        }
+      });
     });
 
     value = newValue;
   };
 
-  return [getter, setter];
+  return [getter, setter] as const;
 }

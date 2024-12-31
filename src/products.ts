@@ -17,14 +17,12 @@ export function getProductElement(
     <div class="flex items-center justify-between">
       <span>Price: ${product.regularPrice}</span>
       <div>
-        <button type="button"  ${
-          count === 0 ? "disabled" : ""
-        }  class="btn-decrease disabled:cursor-not-allowed disabled:opacity-50 bg-green-200 hover:bg-green-300 text-green-800 py-1 px-3 rounded-full">-</button>
+        <button type="button"  class="btn-decrease disabled:cursor-not-allowed disabled:opacity-50 bg-green-200 hover:bg-green-300 text-green-800 py-1 px-3 rounded-full">-</button>
         <span 
         class="cart-count text-green-800"
          data-subscribe-to="countMap" data-subscription-path="${product.id}">
           </span>
-      
+
         <button type="button" class="btn-increase bg-green-200 hover:bg-green-300 text-green-800 py-1 px-3 rounded-full">+</button>
         
         </div>

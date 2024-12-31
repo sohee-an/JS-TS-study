@@ -1,5 +1,4 @@
 import { setupProducts, getProductElement } from "./products";
-import { findElement } from "./utiles";
 import { setupCounter } from "./counter";
 import "./style.css";
 import { setupCart } from "./cart";
@@ -34,26 +33,24 @@ async function main(): Promise<void> {
 
   function onIncreseClick({ productId }: { productId: string }): void {
     const count = increase({ productId });
-
-    updateProductCount({ productId, count });
+    console.log("count", count);
+    // updateProductCount({ productId, count });
     if (count === 1) {
       addProductToCart({ product: getProductById({ productId }) });
     }
-    updateCartCount({ productId, count });
+    // updateCartCount({ productId, count });
     updateTotalCount(getTotalCount());
-    // updateCart();
   }
 
   function onDecreaseClick({ productId }: { productId: string }): void {
     const count = decrease({ productId });
 
-    updateProductCount({ productId, count });
+    // updateProductCount({ productId, count });
     if (count === 0) {
       removeProductFromCart({ product: getProductById({ productId }) });
     }
-    updateCartCount({ productId, count });
+    // updateCartCount({ productId, count });
     updateTotalCount(getTotalCount());
-    // updateCart();
   }
 
   const btnCartElement = document.querySelector<HTMLElement>(".btn-cart");
@@ -63,7 +60,7 @@ async function main(): Promise<void> {
   const cartDimmedBgElement =
     document.querySelector<HTMLElement>(".cart-dimmed-bg")!;
 
-  // if (!btnCartElement || !btnCloseCartElement || !cartDimmedBgElement) return;
+  if (!btnCartElement || !btnCloseCartElement || !cartDimmedBgElement) return;
 
   btnCartElement?.addEventListener("click", () => {
     document.body.classList.add("displaying_cart");
