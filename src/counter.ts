@@ -1,35 +1,51 @@
-import { ICountMap } from "./types/mainType";
+import { bindReactiveState } from "./reactivity";
 
+// 상품의 카운터를 담당하는 함수
 export function setupCounter() {
-  const countMap: ICountMap = {};
+  const [getCountMap, setCountMap] = bindReactiveState({
+    name: "countMap",
+    defaultValue: {},
+  });
 
   const increase = ({ productId }: { productId: string }) => {
-    if (countMap[productId] === undefined) {
-      countMap[productId] = 0;
+    const newCountMap = { ...getCountMap() };
+    if (newCountMap[productId] === undefined) {
+      newCountMap[productId] = 0;
     }
-    countMap[productId] += 1;
-    return countMap[productId];
+    newCountMap[productId] += 1;
+    setCountMap(newCountMap);
+
+    return newCountMap[productId];
   };
 
   const decrease = ({ productId }: { productId: string }) => {
-    if (countMap[productId] === undefined) {
-      countMap[productId] = 0;
+    const newCountMap = { ...getCountMap() };
+    if (newCountMap[productId] === undefined) {
+      newCountMap[productId] = 0;
     }
-    countMap[productId] -= 1;
 
-    return countMap[productId];
+    newCountMap[productId] -= 1;
+    setCountMap(newCountMap);
+
+    return newCountMap[productId];
   };
 
   const getTotalCount = () => {
     let sum = 0;
-    Object.values(countMap).forEach((number) => {
+    Object.values(getCountMap()).forEach((number) => {
       sum += number;
     });
     return sum;
   };
+
+  const getCountByProductId = ({ productId }: { productId: string }) => {
+    return getCountMap()[productId] || 0;
+  };
+
   return {
     increase,
     decrease,
     getTotalCount,
+    getCountByProductId,
   };
 }
