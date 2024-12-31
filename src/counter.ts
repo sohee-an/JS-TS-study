@@ -38,12 +38,14 @@ export function setupCounter() {
     return sum;
   };
 
-  // const addChangeListner = (callback) => {
-  //   callbacks.push(callback);
-  // };
+  const getCountByProductId = ({ productId }: { productId: string }) => {
+    return getCountMap()[productId] || 0;
+  };
+
   return {
     increase,
     decrease,
     getTotalCount,
+    getCountByProductId,
   };
 }

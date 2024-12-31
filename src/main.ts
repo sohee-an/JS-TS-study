@@ -24,7 +24,8 @@ async function main(): Promise<void> {
   // 이부분이 프로덕트에도 쓰이고 카트에서도 쓰이지 않을까 => 데코레이터 패턴으로 묶어서
   // const countMap: ICountMap = {};
 
-  const { increase, decrease, getTotalCount } = setupCounter();
+  const { increase, decrease, getTotalCount, getCountByProductId } =
+    setupCounter();
 
   const updateTotalCount = (totalCount: any) => {
     const totlaCountElement = document.querySelector(".total_count")!;
@@ -32,12 +33,12 @@ async function main(): Promise<void> {
   };
 
   function onIncreseClick({ productId }: { productId: string }): void {
-    const count = increase({ productId });
-    console.log("count", count);
-    // updateProductCount({ productId, count });
-    if (count === 1) {
+    if (getCountByProductId({ productId }) === 0) {
       addProductToCart({ product: getProductById({ productId }) });
     }
+    increase({ productId });
+    // updateProductCount({ productId, count });
+
     // updateCartCount({ productId, count });
     updateTotalCount(getTotalCount());
   }
