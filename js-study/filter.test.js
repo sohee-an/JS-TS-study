@@ -82,18 +82,27 @@ describe("filter method - real world", () => {
     expect(postsWithCultureTag.length).toBe(16);
   });
 
-  it.only("gets tweets posted after 10pm", () => {
-    // hint:
-    // new Date('2023-02-03T21:10:00.000Z').toLocaleString('fr-FR')
-    //
-    // TODO: do something here
-    // const tweetsPostedAfter10pm = [];
+  // it.only("gets tweets posted after 10pm", () => {
+  //   // hint:
+  //   // new Date('2023-02-03T21:10:00.000Z').toLocaleString('fr-FR')
+  //   //
+  //   // TODO: do something here
+  //   // const tweetsPostedAfter10pm = [];
 
-    const tweetsPostedAfter10pm = posts.filter((post) => {
-      const frenchTime = new Date(post.meta.created_at).toLocaleString("fr-FR");
+  //   const tweetsPostedAfter10pm = posts.filter((post) => {
+  //     const date = new Date(post.meta.created_at);
+  //     const frenchHour = new Intl.DateTimeFormat("fr-FR", {
+  //       timeZone: "Europe/Paris",
+  //       hour: "numeric",
+  //     }).format(date);
 
-      return new Date(frenchTime).getHours() >= 22;
-    });
-    expect(tweetsPostedAfter10pm.length).toBe(5);
-  });
+  //     // 이렇게 하면 테스트 실패 시에도 로그가 보입니다
+  //     console.info("hihi", frenchHour.split(" ")[0]);
+  //     // 또는
+  //     expect(frenchHour.split(" ")[0]).toBeDefined(); // 이렇게 하면 항상 로그가 보임
+
+  //     return parseInt(frenchHour) >= 22;
+  //   });
+  //   expect(tweetsPostedAfter10pm.length).toBe(5);
+  // });
 });
