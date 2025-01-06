@@ -1,6 +1,6 @@
-import { goto } from "../router";
+import { Router } from "../class-router";
 
-export function renedrIndex() {
+export function renedrIndex(router: Router) {
   document.querySelector("#app")!.innerHTML = `
     <h1>Movie Info</h1>
     <form>
@@ -13,11 +13,11 @@ export function renedrIndex() {
     .querySelector("form")
     ?.addEventListener("submit", (event: any) => {
       event.preventDefault();
-      goto(`/search?query=${event.target.query.value}`, { push: true });
+      router.goto(`/search?query=${event.target.query.value}`, { push: true });
     });
 
   document.body.querySelector("a")?.addEventListener("click", (event) => {
     event.preventDefault();
-    goto(`/replace`, { replace: true });
+    router.goto(`/replace`, { replace: true });
   });
 }
