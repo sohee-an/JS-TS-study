@@ -11,6 +11,7 @@ export async function renderSearch({
     `http://localhost:3000/search?query=${searchParams.query}`
   );
   const movies = await response.json();
+  console.log("movies",movies)
 
   document.querySelector("#app")!.innerHTML = `
     <h1>Search Results</h1>
@@ -18,10 +19,10 @@ export async function renderSearch({
    .map(
      (movie: any) => `
     <div>
-      <p>${movie.title}</p>
+      <h5>${movie.title}</p>
     </div>
     `
    )
-   .json("")}
+   .join("")}
   `;
 }
