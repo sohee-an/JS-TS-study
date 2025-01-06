@@ -1,23 +1,26 @@
+import { TGotoOptions } from "./types";
+
 const routes: any = {
   "/": renedrIndex,
   "/search": renderSearch,
 };
 
 window.addEventListener("popstate", (event) => {
-  console.log("popstate", event);
-
   if (routes[location.pathname]) {
     routes[location.pathname]();
     return;
   }
 });
 
-const goto = (url: string) => {
+const goto = (url: string, { push }: TGotoOptions = {}) => {
   const pathnameArr = url.split("?");
   const params = Object.fromEntries(new URLSearchParams(url.split("?")[1]));
 
   if (routes[pathnameArr[0]]) {
-    history.pushState({}, "", url);
+    if (push) {
+      history.pushState({}, "", url);
+    }
+
     routes[pathnameArr[0]]({ searchParams: params });
     return;
   }
@@ -36,7 +39,7 @@ function renedrIndex() {
     .querySelector("form")
     ?.addEventListener("submit", (event: any) => {
       event.preventDefault();
-      goto(`/search?query=${event.target.query.value}`);
+      goto(`/search?query=${event.target.query.value}`, { push: true });
     });
 }
 
@@ -56,8 +59,4 @@ function renderSearch({
   `;
 }
 
-if (routes[location.pathname]) {
-  routes[location.pathname](location.search);
-} else {
-  renedrIndex();
-}
+goto(location.pathname + location.search);
