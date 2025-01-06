@@ -10,8 +10,10 @@
 -  Proxy를 통해 좀더 중복된 코드를 수정하고 , 가독성이 있게 바꿈
 
 
+
 ### js-array 연습
 - map,filter,reduce 등 array 관련된 부분
+
 
 
 ### csr 직접 구현해보기
