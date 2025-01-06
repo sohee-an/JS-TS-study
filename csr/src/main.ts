@@ -1,12 +1,5 @@
-import { renedrIndex } from "./pages";
-import { replaceIndex } from "./pages/replace";
-import { renderSearch } from "./pages/search";
-import { start } from "./router";
+import { Router } from "./class-router";
+import { routes } from "./routes";
 
-start({
-  routes: {
-    "/": renedrIndex,
-    "/search": renderSearch,
-    "/replace": replaceIndex,
-  },
-});
+const router = new Router(routes);
+router.start();
