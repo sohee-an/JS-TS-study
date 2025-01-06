@@ -9,6 +9,7 @@ export function renedrIndex() {
       <a href="/replace">replace</a>
     </form>
   `;
+
   document.body
     .querySelector("form")
     ?.addEventListener("submit", (event: any) => {
