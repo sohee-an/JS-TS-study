@@ -1,6 +1,7 @@
-import { Router } from "../class-router";
+import { router } from "../store/router-context";
 
-export function renedrIndex(router: Router) {
+export function renedrIndex() {
+  // const router = new Router(routes);
   document.querySelector("#app")!.innerHTML = `
     <h1>Movie Info</h1>
     <form>

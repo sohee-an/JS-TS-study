@@ -1,12 +1,3 @@
-import { Router } from "./class-router";
-import { createRouter } from "./function-router";
-import { renedrIndex } from "./pages";
-import { routes } from "./routes";
+import { router } from "./store/router-context";
 
-const router = new Router(routes);
 router.start();
-
-renedrIndex(router);
-
-// const router = createRouter({ routes });
-// router.start();
