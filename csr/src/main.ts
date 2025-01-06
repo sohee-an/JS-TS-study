@@ -50,4 +50,8 @@ function renderSearch(url: string) {
   `;
 }
 
-renedrIndex();
+if (routes[location.pathname]) {
+  routes[location.pathname](location.search);
+} else {
+  renedrIndex();
+}
