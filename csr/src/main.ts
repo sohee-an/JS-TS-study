@@ -1,3 +1,12 @@
-import { goto } from "./router";
+import { renedrIndex } from "./pages";
+import { replaceIndex } from "./pages/replace";
+import { renderSearch } from "./pages/search";
+import { start } from "./router";
 
-goto(location.pathname + location.search);
+start({
+  routes: {
+    "/": renedrIndex,
+    "/search": renderSearch,
+    "/replace": replaceIndex,
+  },
+});

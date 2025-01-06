@@ -1,13 +1,6 @@
 import { TGotoOptions } from "./types";
-import { renedrIndex } from "./pages";
-import { replaceIndex } from "./pages/replace";
-import { renderSearch } from "./pages/search";
 
-export const routes: Record<string, any> = {
-  "/": renedrIndex,
-  "/search": renderSearch,
-  "/replace": replaceIndex,
-};
+let routes: Record<string, any>;
 
 window.addEventListener("popstate", (event) => {
   if (routes[location.pathname]) {
@@ -32,4 +25,9 @@ export const goto = (url: string, { push, replace }: TGotoOptions = {}) => {
     return;
   }
   location.href = url;
+};
+
+export const start = (params: Record<string, any>) => {
+  routes = params.routes;
+  goto(location.pathname + location.search);
 };
