@@ -14,10 +14,11 @@ window.addEventListener("popstate", (event) => {
 
 const goto = (url: string) => {
   const pathnameArr = url.split("?");
+  const params = Object.fromEntries(new URLSearchParams(url.split("?")[1]));
 
   if (routes[pathnameArr[0]]) {
     history.pushState({}, "", url);
-    routes[pathnameArr[0]](pathnameArr[1]);
+    routes[pathnameArr[0]]({ searchParams: params });
     return;
   }
   location.href = url;
@@ -39,13 +40,18 @@ function renedrIndex() {
     });
 }
 
-function renderSearch(url: string) {
-  const params = new URLSearchParams(url);
-  const value = params.get("query");
+function renderSearch({
+  searchParams,
+}: {
+  searchParams: Record<string, string>;
+}) {
+  // const params = new URLSearchParams(url);
+  // const value = params.get("query");
+  console.log("url", searchParams);
 
   document.querySelector("#app")!.innerHTML = `
     <h1>Search Results</h1>
-    <p>${value}</p>
+    <p>${searchParams.query}</p>
    
   `;
 }
