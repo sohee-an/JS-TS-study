@@ -5,11 +5,12 @@ export class Router {
 
   constructor(routes: Record<string, any>) {
     this.routes = routes;
-    window.addEventListener("popstate", this.handlePopState);
+    // window.addEventListener("popstate", this.handlePopState);
   }
 
   public start() {
     this.goto(location.pathname + location.search);
+    window.addEventListener("popstate", this.handlePopState);
   }
   // public start() {
   //   const { pathname, search } = window.location;

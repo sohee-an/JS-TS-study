@@ -1,3 +1,8 @@
+export function getInitialHTML() {
+  return ` <h1>Search Results</h1>
+    <p></p>`;
+}
+
 export async function renderSearch({
   searchParams,
 }: {
@@ -11,7 +16,7 @@ export async function renderSearch({
     `http://localhost:3000/search?query=${searchParams.query}`
   );
   const movies = await response.json();
-  console.log("movies",movies)
+  console.log("movies", movies);
 
   document.querySelector("#app")!.innerHTML = `
     <h1>Search Results</h1>

@@ -1,3 +1,7 @@
 import { router } from "./store/router-context";
+import { getInitialHTML } from "./pages";
+export { getInitialHTML };
 
-router.start();
+if (typeof window !== "undefined") {
+  router.start();
+}
